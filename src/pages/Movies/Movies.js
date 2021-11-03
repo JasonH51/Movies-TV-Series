@@ -15,26 +15,24 @@ function Movies() {
   const genreforURL = useGenres(selectedGenres);
 
   const fetchMovies = async () => {
-    const {data} = await axios.get(
-      `https://api.themoviedb.org/3/discover/movie?api_key=ea43363f811a71fcbfe8b52f2c68e898&language=en-US&sort_by=popularity.desc&include_adult=false&page=${page}&with_genres=${genreforURL}`
-    );
-    return data;
-    // setContent(data.results);
-    // setNumOfPages(data.total_pages);
+    try {
+      const {data} = await axios.get(
+        `https://api.themoviedb.org/3/discover/movie?api_key=ea43363f811a71fcbfe8b52f2c68e898&language=en-US&sort_by=popularity.desc&include_adult=false&page=${page}&with_genres=${genreforURL}`
+      );
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     window.scroll(0, 0);
-    let mounted = true;
+
     fetchMovies().then(res => {
-      if (mounted) {
-        setContent(res.results);
-        setNumOfPages(res.total_pages);
-      }
+      setContent(res.results);
+      setNumOfPages(res.total_pages);
     });
-    return function Cleanup() {
-      mounted = false;
-    };
+
     // eslint-disable-next-line
   }, [genreforURL, page]);
 
